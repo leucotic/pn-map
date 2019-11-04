@@ -43,54 +43,88 @@ var housingG = L.layerGroup(),
 var orgsLink = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu_F9uodWU7mO3Yfs3JjrrpGSbMJMAThWqKJcCrAgKWYnUoMf1D9dsLM9W1pAazLChWUCcYMzdhzjM/pub?output=tsv";
 var servicesLink = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJ29Xzh0j_ZZJApMKWeJI8GrhD6I8MONzRhJEfMKT6UBPqRzJi0J9I95KpFwoxuwfeClNAEVarYXy1/pub?output=tsv";
 
-getData(orgsLink);
+getData(orgsLink, newfunx);
+// setTimeout(function(){
+  
+// },300)
 
-function getData(url){
+
+function getData(url, func){
     data = Papa.parse(url, {
     download: true,
-    delimiter: "", 
+    delimiter: "\t", 
     newline: "",  
     quoteChar: '"',
     escapeChar: '"',
     header: true,
     complete: function(results, file){
-      return main(results.data);
+      return func(results.data);
       }
     });
 }
 
+var orgs;
+function newfunx(data){
+  orgs = data;
+  getData(servicesLink, main);
+}
+
+
 function main(data){
-  console.log("gotten");
-    mapOrgs(data);
-  console.log(data);
+  // let services = data;
+  orgs = restructureData(orgs, data);
+  mapOrgs(orgs);
+}
 
-
+function restructureData(orgs, services){
+    orgs.forEach(org => {
+    org.services = [];
+    org.serviceTypes = [];
+  });
+    console.log(services);
+  services.forEach(service =>{
+    for(let org of orgs){
+      if(org.Name == service.OrgName){
+          org.services.push(service);
+          if(!org.serviceTypes.includes(service.Type))
+          org.serviceTypes.push(service.Type);
+      }
+    }
+  });
+  return orgs;
 }
 
 function mapOrgs(data){
 	
 	data.forEach(org => {
-    console.log(org);
     var marker = L.marker([org.Latitude, org.Longitude]).addTo(mymap);
-    let section = document.createElement('div');
-    let name = section.appendChild(document.createElement('h2'));
-    name.appendChild(document.createTextNode(org.Name));
-    let address = section.appendChild(document.createElement('p'));
-    address.appendChild(document.createTextNode(org.Address));
-    let website = section.appendChild(document.createElement('a'));
-    website.appendChild(document.createTextNode(org.Website));
-    website.href = org.Website;
-    marker.bindPopup(section);
 
-	// 	var markerid = business.Name.replace(/[^a-zA-Z ]/g, "");
- //      makeMarker(business, markerid);
- //    business.markerid = markerid;
-	// var popupName = "<b>"+ business.Name + "</b>";
-	// 	var popupAddress = "<br>" + business.Address;
- //    var gmapslink = '<br><a href=https://www.google.com/maps/place/' + business.Address.replace(/ /g, '+') + "/' target='_blank'>Directions</a>";
- //  	markers[markerid].bindPopup(popupName + popupAddress + gmapslink);
-    // makeRow(business);
+    let section = document.createElement('div');
+    section.classList.add("popup");
+    let name = addText('h1', org.Name, section);
+    let address = addText('a', org.Address, section);
+    address.href ="https://www.google.com/maps/place/" + org.Address.replace(/ /g, '+');
+    address.style.display = 'block';
+    let website = addText('a', org.Website, section);
+    website.href = org.Website;
+    let servicesDiv = section.appendChild(document.createElement('div'));
+    let servicesTitle = addText('h2', "Services", servicesDiv)
+
+    org.services.forEach(service=>{
+      let servDiv = section.appendChild(document.createElement('div'));
+      let servName = addText('h3', service.Name, servDiv);
+      let servDescription = addText('p', service.Description, servDiv);
+
+    })
+    marker.bindPopup(section);
 	});
+}
+
+function addText(type, text, place){
+    let element = place.appendChild(document.createElement(type));
+    element.appendChild(document.createTextNode(text));
+    return element;
+
 }
 
 function makeMarker(org) {
@@ -98,36 +132,6 @@ function makeMarker(org) {
       // currentLayer.addLayer(markers[markerid]);
       // console.log(markerid);
 }
-
-// var myTable = document.getElementById("tablediv");
-
-function makeRow(business) {
-  var rowName = "<b>"+ business.Name + "</b>";
-  var rowAddress = "<br>" + business.Address;
-  var div = document.createElement('div');
-  myTable.appendChild(div);
-  div.setAttribute('class', 'location');
-  var divtitle = '<h4>' + business.Name + '</h4>';
-  var gmapslink = '<br><a href=https://www.google.com/maps/place/' + business.Address.replace(/ /g, '+') + "/' target='_blank'>Directions</a>";
-  var locateBusiness = '<a class="cellx" href="#' + business.markerid + '" ' + 'id="' + business.markerid + '_">Find on Map</a>';
-  // clicky(locateBusiness, business);
-  div.innerHTML = divtitle + rowAddress + gmapslink + " | " + locateBusiness;
-  div.className = business.Type;
-
-}
-
-function clicky(locateBusiness, business) { // locate corresponding marker and activate popup
-      locateBusiness.onclick = function(){
-        var mID = business.id.slice(0, -1); // remove the extra underscore
-        console.log(mID);
-        mymap._layers[mID].fire('click');
-        mymap.setView([business.Latitude, business.Longitude]);
-        console.log("clicked", mID);
-        // window.scrollTo(0, 0);
-        // x[i].parentElement.setAttribute('class', 'show');
-        locateBusiness.classList.toggle("show"); // toggling the details info display
-      };
-  }
 
 function removeLoader(){
   let loader = document.querySelector('.loading');
@@ -161,13 +165,4 @@ function removeLoader(){
 // };
 
 
-
-
-// let layerControl = L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(mymap);
-// $('.leaflet-control-layers').on('mouseleave', () => {
-//     layerControl.collapse();
-// });
-// $('.leaflet-control-layers-toggle').on('mouseenter', () => {
-//     layerControl.expand();
-// });
 
