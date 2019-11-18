@@ -1,7 +1,7 @@
 
 // -------- Make the map --------
 
-var mymap = L.map('mapid').setView([39.962131, -75.201477], 15);
+var mymap = L.map('mapid').setView([39.96467, -75.213446], 14);
 
 var basemaplayer = new L.StamenTileLayer("watercolor", {
 });
@@ -21,7 +21,7 @@ function onMapClick(e) {
         .openOn(mymap);
 }
 
-// mymap.on('click', onMapClick);
+mymap.on('click', onMapClick);
 
 // Layer Groups
 var housingG = L.layerGroup(),
@@ -110,14 +110,29 @@ function mapOrgs(data){
     let servicesDiv = section.appendChild(document.createElement('div'));
     let servicesTitle = addText('h2', "Services", servicesDiv)
 
-    org.services.forEach(service=>{
+    org.services.forEach(service=> {
       let servDiv = section.appendChild(document.createElement('div'));
       let servName = addText('h3', service.Name, servDiv);
-      let servDescription = addText('p', service.Description, servDiv);
+      // let togglebtn = addText('span', ' show/hide details', servDiv);
+      // togglebtn.classList.add('togglebtn');
+      // togglebtn.onclick = toggleClass;
+      let details = servDiv.appendChild(document.createElement('div'));
+      details.classList.add('details');
+      let servDescription = addText('p', service.Description, details);
 
     })
+    
     marker.bindPopup(section);
 	});
+}
+
+function toggleClass(){
+  let mydiv = this.parentElement;
+  if(mydiv.classList.contains("open")){
+    mydiv.classList.remove("open");
+  }else mydiv.classList.add("open");
+  let blep = mydiv.classList;
+  console.log("clicked", blep);
 }
 
 function addText(type, text, place){

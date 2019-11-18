@@ -23,4 +23,29 @@
 .popup {
   max-height: 90vh;
   overflow: auto;
+  max-width: 500px;
 }
+
+.details {
+  /*display: none;*/
+}
+
+.open .details {
+  display: block;
+}
+
+.togglebtn {
+  font-weight: 300;
+  border-radius: 15px;
+  color: white;
+  font-size: .8rem;
+  padding: 2px 5px;
+  background-color: gray;
+  margin-left: 10px;
+  opacity: .7;
+}
+.togglebtn:hover, .togglebtn:active {
+  opacity: 1;
+  cursor: pointer;
+}
+
