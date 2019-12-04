@@ -1,12 +1,16 @@
 
 // -------- Make the map --------
 
-var mymap = L.map('mapid').setView([39.96467, -75.213446], 14);
+var mymap = L.map('mapid', {
+    minZoom: 2,
+    maxZoom: 18
+}).setView([39.96467, -75.213446], 14);
 
 var basemaplayer = new L.StamenTileLayer("watercolor", {
 });
-    mymap.addLayer(basemaplayer);
-var labels = new L.StamenTileLayer("terrain-labels", {
+
+  mymap.addLayer(basemaplayer);
+var labels = new L.StamenTileLayer("toner-labels", {
   // detectRetina: true
     // zoomOffset: -10
 });
@@ -24,18 +28,35 @@ function onMapClick(e) {
 mymap.on('click', onMapClick);
 
 // Layer Groups
+
 var housingG = L.layerGroup(),
     educationG = L.layerGroup(),
     employmentG = L.layerGroup(),
     healthG = L.layerGroup(),
     behavioralG = L.layerGroup(),
     foodG = L.layerGroup(),
-    clothingG = L.layerGroup(),
+    goodsG = L.layerGroup(),
     careG = L.layerGroup(),
     financialG = L.layerGroup(),
     legalG = L.layerGroup(),
-    OSTG = L.layerGroup(),
+    ostG = L.layerGroup(),
     otherG = L.layerGroup();
+
+
+let layerGroups = [
+  housingG,
+  educationG,
+  employmentG,
+  healthG,
+  behavioralG,
+  foodG,
+  goodsG,
+  careG,
+  financialG,
+  legalG,
+  ostG,
+  otherG
+];
 
 
 // -------- Output PN Map Data -------
@@ -81,7 +102,7 @@ function restructureData(orgs, services){
     org.services = [];
     org.serviceTypes = [];
   });
-    console.log(services);
+    console.log(orgs);
   services.forEach(service =>{
     for(let org of orgs){
       if(org.Name == service.OrgName){
@@ -97,7 +118,10 @@ function restructureData(orgs, services){
 function mapOrgs(data){
 	
 	data.forEach(org => {
-    var marker = L.marker([org.Latitude, org.Longitude]).addTo(mymap);
+
+    // var marker = L.marker([org.Latitude, org.Longitude]).addTo(mymap);
+    var marker = L.marker([org.Latitude, org.Longitude]);
+    addToLayers(org, marker);
 
     let section = document.createElement('div');
     section.classList.add("popup");
@@ -124,6 +148,19 @@ function mapOrgs(data){
     
     marker.bindPopup(section);
 	});
+}
+
+function addToLayers(org, marker){
+  
+  console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
+
+  if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
+  org.serviceTypes.forEach(service =>{
+    let layerName = service.toLowerCase() + "G";
+    console.log(layerName);
+    // marker.addTo(eval(layerName));
+    eval(layerName).addLayer(marker);
+  });
 }
 
 function toggleClass(){
@@ -156,28 +193,40 @@ function removeLoader(){
 
 // businesses.addTo(mymap);
 
-    // GroceryG.addTo(mymap);
-    // RestaurantsG.addTo(mymap);
-    // FinanceG.addTo(mymap);
-    // ApparelG.addTo(mymap);
-    // HomeG.addTo(mymap);
-    // LaundryG.addTo(mymap);
-    // ElectronicsG.addTo(mymap);
-    // CommunityG.addTo(mymap);
-    // BeautyG.addTo(mymap);
-    // HealthG.addTo(mymap);
-    // MiscellaneousG.addTo(mymap);
-    // ArtsG.addTo(mymap);
+layerGroups.forEach(layer =>{
+  layer.addTo(mymap);
+});
 
+  // housingG.addTo(mymap);
+  // educationG.addTo(mymap);
+  // employmentG.addTo(mymap);
+  // healthG.addTo(mymap);
+  // behavioralG.addTo(mymap);
+  // foodG.addTo(mymap);
+  // clothingG.addTo(mymap);
+  // careG.addTo(mymap);
+  // financialG.addTo(mymap);
+  // legalG.addTo(mymap);
+  // OSTG.addTo(mymap);
+  // otherG.addTo(mymap);
 
-// var baseMaps = {
-//     "Map": basemaplayer
-// };
+var baseMaps = {
+    "Map": basemaplayer
+};
 
-// var overlayMaps = {
-//     // "Grocery": GroceryG,
-//     // "Restaurants": RestaurantsG
-// };
+var overlayMaps = {
+    "Housing": housingG,
+    "Education": educationG,
+    "Employment": employmentG,
+    "Health": healthG,
+    "Behavioral Health": behavioralG,
+    "Food": foodG,
+    "Clothing & Goods": goodsG,
+    "Financial Services": financialG,
+    "Legal Aid": legalG,
+    "Out of School Time": ostG,
+    "Other": otherG
+};
 
-
+L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
