@@ -6,10 +6,11 @@ var mymap = L.map('mapid', {
     maxZoom: 18
 }).setView([39.96467, -75.213446], 14);
 
-var basemaplayer = new L.StamenTileLayer("watercolor", {
+var maptiles = new L.StamenTileLayer("watercolor", {
 });
 
-  mymap.addLayer(basemaplayer);
+  mymap.addLayer(maptiles);
+
 var labels = new L.StamenTileLayer("toner-labels", {
   // detectRetina: true
     // zoomOffset: -10
@@ -40,7 +41,8 @@ var housingG = L.layerGroup(),
     financialG = L.layerGroup(),
     legalG = L.layerGroup(),
     ostG = L.layerGroup(),
-    otherG = L.layerGroup();
+    otherG = L.layerGroup(),
+    allG = L.layerGroup();
 
 
 let layerGroups = [
@@ -55,7 +57,8 @@ let layerGroups = [
   financialG,
   legalG,
   ostG,
-  otherG
+  otherG,
+  allG
 ];
 
 
@@ -153,7 +156,7 @@ function mapOrgs(data){
 function addToLayers(org, marker){
   
   console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
-
+  allG.addLayer(marker);
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
     let layerName = service.toLowerCase() + "G";
@@ -211,10 +214,6 @@ layerGroups.forEach(layer =>{
   // otherG.addTo(mymap);
 
 var baseMaps = {
-    "Map": basemaplayer
-};
-
-var overlayMaps = {
     "Housing": housingG,
     "Education": educationG,
     "Employment": employmentG,
@@ -225,8 +224,13 @@ var overlayMaps = {
     "Financial Services": financialG,
     "Legal Aid": legalG,
     "Out of School Time": ostG,
-    "Other": otherG
+    "Other": otherG,
+      "<b>Show All</b>": allG,
+    
+};
+
+var overlayMaps = {
+    
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(mymap);
-
