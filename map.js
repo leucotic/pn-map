@@ -6,16 +6,12 @@ var mymap = L.map('mapid', {
     maxZoom: 18
 }).setView([39.96467, -75.213446], 14);
 
-var maptiles = new L.StamenTileLayer("watercolor", {
-});
+var maptiles = new L.StamenTileLayer("watercolor");
 
-  mymap.addLayer(maptiles);
+var labels = new L.StamenTileLayer("toner-labels");
 
-var labels = new L.StamenTileLayer("toner-labels", {
-  // detectRetina: true
-    // zoomOffset: -10
-});
-    mymap.addLayer(labels);
+mymap.addLayer(maptiles);
+mymap.addLayer(labels);
 
 var popup = L.popup();
 
@@ -29,7 +25,6 @@ function onMapClick(e) {
 mymap.on('click', onMapClick);
 
 // Layer Groups
-
 var housingG = L.layerGroup(),
     educationG = L.layerGroup(),
     employmentG = L.layerGroup(),
@@ -43,7 +38,6 @@ var housingG = L.layerGroup(),
     ostG = L.layerGroup(),
     otherG = L.layerGroup(),
     allG = L.layerGroup();
-
 
 let layerGroups = [
   housingG,
@@ -68,10 +62,6 @@ var orgsLink = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu_F9uodWU7mO3Y
 var servicesLink = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJ29Xzh0j_ZZJApMKWeJI8GrhD6I8MONzRhJEfMKT6UBPqRzJi0J9I95KpFwoxuwfeClNAEVarYXy1/pub?output=tsv";
 
 getData(orgsLink, newfunx);
-// setTimeout(function(){
-  
-// },300)
-
 
 function getData(url, func){
     data = Papa.parse(url, {
@@ -121,8 +111,6 @@ function restructureData(orgs, services){
 function mapOrgs(data){
 	
 	data.forEach(org => {
-
-    // var marker = L.marker([org.Latitude, org.Longitude]).addTo(mymap);
     var marker = L.marker([org.Latitude, org.Longitude]);
     addToLayers(org, marker);
 
@@ -161,7 +149,6 @@ function addToLayers(org, marker){
   org.serviceTypes.forEach(service =>{
     let layerName = service.toLowerCase() + "G";
     console.log(layerName);
-    // marker.addTo(eval(layerName));
     eval(layerName).addLayer(marker);
   });
 }
@@ -182,36 +169,9 @@ function addText(type, text, place){
 
 }
 
-function makeMarker(org) {
-      // let currentLayer = eval(org.Type +"G")
-      // currentLayer.addLayer(markers[markerid]);
-      // console.log(markerid);
-}
-
-function removeLoader(){
-  let loader = document.querySelector('.loading');
-  // loader.remove();
-}
-
-
-// businesses.addTo(mymap);
-
-layerGroups.forEach(layer =>{
+layerGroups.forEach(layer => {
   layer.addTo(mymap);
 });
-
-  // housingG.addTo(mymap);
-  // educationG.addTo(mymap);
-  // employmentG.addTo(mymap);
-  // healthG.addTo(mymap);
-  // behavioralG.addTo(mymap);
-  // foodG.addTo(mymap);
-  // clothingG.addTo(mymap);
-  // careG.addTo(mymap);
-  // financialG.addTo(mymap);
-  // legalG.addTo(mymap);
-  // OSTG.addTo(mymap);
-  // otherG.addTo(mymap);
 
 var baseMaps = {
     "Housing": housingG,
@@ -225,12 +185,11 @@ var baseMaps = {
     "Legal Aid": legalG,
     "Out of School Time": ostG,
     "Other": otherG,
-      "<b>Show All</b>": allG,
+    "<b>Show All</b>": allG,
     
 };
 
-var overlayMaps = {
-    
-};
+var overlayMaps = {};
 
 L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
