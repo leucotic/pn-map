@@ -39,21 +39,21 @@ var housingG = L.layerGroup(),
     otherG = L.layerGroup(),
     allG = L.layerGroup();
 
-let layerGroups = [
-  housingG,
-  educationG,
-  employmentG,
-  healthG,
-  behavioralG,
-  foodG,
-  goodsG,
-  careG,
-  financialG,
-  legalG,
-  ostG,
-  otherG,
-  allG
-];
+// let layerGroups = [
+//   housingG,
+//   educationG,
+//   employmentG,
+//   healthG,
+//   behavioralG,
+//   foodG,
+//   goodsG,
+//   careG,
+//   financialG,
+//   legalG,
+//   ostG,
+//   otherG,
+//   allG
+// ];
 
 
 // -------- Output PN Map Data -------
@@ -169,11 +169,8 @@ function addText(type, text, place){
 
 }
 
-layerGroups.forEach(layer => {
-  layer.addTo(mymap);
-});
-
 var baseMaps = {
+    "<b>Show All</b>": allG,
     "Housing": housingG,
     "Education": educationG,
     "Employment": employmentG,
@@ -184,12 +181,11 @@ var baseMaps = {
     "Financial Services": financialG,
     "Legal Aid": legalG,
     "Out of School Time": ostG,
-    "Other": otherG,
-    "<b>Show All</b>": allG,
-    
+    "Other": otherG
 };
 
 var overlayMaps = {};
-
 L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
+allG.addTo(mymap);
 
