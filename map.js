@@ -39,23 +39,6 @@ var housingG = L.layerGroup(),
     otherG = L.layerGroup(),
     allG = L.layerGroup();
 
-// let layerGroups = [
-//   housingG,
-//   educationG,
-//   employmentG,
-//   healthG,
-//   behavioralG,
-//   foodG,
-//   goodsG,
-//   careG,
-//   financialG,
-//   legalG,
-//   ostG,
-//   otherG,
-//   allG
-// ];
-
-
 // -------- Output PN Map Data -------
 
 var orgsLink = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSu_F9uodWU7mO3Yfs3JjrrpGSbMJMAThWqKJcCrAgKWYnUoMf1D9dsLM9W1pAazLChWUCcYMzdhzjM/pub?output=tsv";
@@ -166,7 +149,6 @@ function addText(type, text, place){
     let element = place.appendChild(document.createElement(type));
     element.appendChild(document.createTextNode(text));
     return element;
-
 }
 
 var baseMaps = {
