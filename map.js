@@ -6,7 +6,14 @@ var mymap = L.map('mapid', {
     maxZoom: 18
 }).setView([39.96467, -75.213446], 14);
 
-var maptiles = new L.StamenTileLayer("watercolor");
+var maptiles = new L.StamenTileLayer("watercolor", {
+  "attribution":  [
+                'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, ',
+                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
+                'Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, ',
+                'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+            ].join("")
+});
 
 var labels = new L.StamenTileLayer("toner-labels");
 
@@ -22,7 +29,7 @@ function onMapClick(e) {
         .openOn(mymap);
 }
 
-mymap.on('click', onMapClick);
+// mymap.on('click', onMapClick);
 
 // Layer Groups
 var housingG = L.layerGroup(),
@@ -78,7 +85,7 @@ function restructureData(orgs, services){
     org.services = [];
     org.serviceTypes = [];
   });
-    console.log(orgs);
+    // console.log(orgs);
   services.forEach(service =>{
     for(let org of orgs){
       if(org.Name == service.OrgName){
@@ -98,25 +105,38 @@ function mapOrgs(data){
     addToLayers(org, marker);
 
     let section = document.createElement('div');
+    // $(section).addClass("popup")
     section.classList.add("popup");
+    // $(section).append('h1').text(org.Name);
     let name = addText('h1', org.Name, section);
-    let address = addText('a', org.Address, section);
+    let address = addText('a', `${org.Address}`, section);
     address.href ="https://www.google.com/maps/place/" + org.Address.replace(/ /g, '+');
     address.style.display = 'block';
-    let website = addText('a', org.Website, section);
+    let website = addText('a', `${org.Website}`, section);
     website.href = org.Website;
+    website.style.display = 'block';
+    let phone = addText('a', org.Phone, section);
+    phone.href = "tel: " +org.Phone;
+    phone.style.display = 'block';
     let servicesDiv = section.appendChild(document.createElement('div'));
-    let servicesTitle = addText('h2', "Services", servicesDiv)
+    let servicesTitle = addText('h2', "Services:", servicesDiv)
 
     org.services.forEach(service=> {
       let servDiv = section.appendChild(document.createElement('div'));
       let servName = addText('h3', service.Name, servDiv);
+      let servHours = addText('p', `${service.Hours ? `Hours: ${service.Hours}`: "" }`, servDiv);
+      let servPhone = addText('p', `${service.Phone ? `Phone: ${service.Phone}`: "" }`, servDiv);
+      let servDemographics = addText('p', `${service.Demographics ? `Demographics: ${service.Demographics}`: "" }`, servDiv);
+      let servAccess = addText('p', `${service.Accessibility ? `Accessibility: ${service.Accessibility}`: "" }`, servDiv);
+      let servElig = addText('p', `${service.Eligibility ? `Eligibility: ${service.Eligibility}`: "" }`, servDiv);
+      let servCost = addText('p', `${service.Cost ? `Cost: ${service.Cost}`: "" }`, servDiv);
+      let servDocuments = addText('p', `${service.Documents ? `Documents: ${service.Documents}`: "" }`, servDiv);
       // let togglebtn = addText('span', ' show/hide details', servDiv);
       // togglebtn.classList.add('togglebtn');
       // togglebtn.onclick = toggleClass;
-      let details = servDiv.appendChild(document.createElement('div'));
-      details.classList.add('details');
-      let servDescription = addText('p', service.Description, details);
+      // let details = servDiv.appendChild(document.createElement('div'));
+      // details.classList.add('details');
+      let servDescription = addText('p', `${service.Description ? `Description: ${service.Description}`: "" }`, servDiv);
 
     })
     
@@ -126,12 +146,12 @@ function mapOrgs(data){
 
 function addToLayers(org, marker){
   
-  console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
+  // console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
   allG.addLayer(marker);
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
     let layerName = service.toLowerCase() + "G";
-    console.log(layerName);
+    // console.log(layerName);
     eval(layerName).addLayer(marker);
   });
 }
@@ -167,7 +187,10 @@ var baseMaps = {
 };
 
 var overlayMaps = {};
-L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
+
+var mycontrol = L.control.layers(baseMaps, overlayMaps, 
+  {position: "topleft"}).addTo(mymap);
 
 allG.addTo(mymap);
 
