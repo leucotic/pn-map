@@ -87,12 +87,21 @@ function restructureData(orgs, services){
   });
     // console.log(orgs);
   services.forEach(service =>{
+    // console.log(service.Type);
+    let pushed = false;
     for(let org of orgs){
-      if(org.Name == service.OrgName){
+      if(org.Name === service.OrgName){
           org.services.push(service);
+          pushed = true;
+          // if(typeof service.Type == "undefined"){
+          //   console.log(service);
+          // }
           if(!org.serviceTypes.includes(service.Type))
           org.serviceTypes.push(service.Type);
       }
+    }
+    if (pushed == false){
+      console.log("org not found: ", service.OrgName)
     }
   });
   return orgs;
@@ -150,6 +159,7 @@ function addToLayers(org, marker){
   allG.addLayer(marker);
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
+    console.log(service);
     let layerName = service.toLowerCase() + "G";
     // console.log(layerName);
     eval(layerName).addLayer(marker);
