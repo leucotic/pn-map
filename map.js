@@ -4,7 +4,7 @@
 var mymap = L.map('mapid', {
     minZoom: 2,
     maxZoom: 18
-}).setView([39.96467, -75.213446], 14);
+}).setView([39.9673942,-75.1979834], 14);
 
 var maptiles = new L.StamenTileLayer("watercolor", {
   "attribution":  [
@@ -36,13 +36,14 @@ var housingG = L.layerGroup(),
     educationG = L.layerGroup(),
     employmentG = L.layerGroup(),
     healthG = L.layerGroup(),
-    behavioralG = L.layerGroup(),
+    behavioral_healthG = L.layerGroup(),
     foodG = L.layerGroup(),
     goodsG = L.layerGroup(),
     careG = L.layerGroup(),
     financialG = L.layerGroup(),
     legalG = L.layerGroup(),
     ostG = L.layerGroup(),
+    case_managementG = L.layerGroup(),
     otherG = L.layerGroup(),
     allG = L.layerGroup();
 
@@ -85,6 +86,8 @@ function restructureData(orgs, services){
     org.services = [];
     org.serviceTypes = [];
   });
+    // console.log(services);
+    // console.log(orgs);
     // console.log(orgs);
   services.forEach(service =>{
     // console.log(service.Type);
@@ -160,7 +163,7 @@ function addToLayers(org, marker){
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
     console.log(service);
-    let layerName = service.toLowerCase() + "G";
+    let layerName = service.toLowerCase().replace(" ", "_") + "G";
     // console.log(layerName);
     eval(layerName).addLayer(marker);
   });
@@ -187,12 +190,13 @@ var baseMaps = {
     "Education": educationG,
     "Employment": employmentG,
     "Health": healthG,
-    "Behavioral Health": behavioralG,
+    "Behavioral Health": behavioral_healthG,
     "Food": foodG,
     "Clothing & Goods": goodsG,
     "Financial Services": financialG,
     "Legal Aid": legalG,
     "Out of School Time": ostG,
+    "Case/Resource Management": case_managementG,
     "Other": otherG
 };
 
