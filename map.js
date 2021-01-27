@@ -133,7 +133,7 @@ function restructureData(orgs, services){
     // console.log(service.Type);
     let pushed = false;
     for(let org of orgs){
-      if(org.Name === service.OrgName){
+      if(org.Name === service.OrgName && org.Latitude && org.Longitude){
           org.services.push(service);
           pushed = true;
           // if(typeof service.Type == "undefined"){
