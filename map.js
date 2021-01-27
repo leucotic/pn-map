@@ -32,20 +32,27 @@ function onMapClick(e) {
 // mymap.on('click', onMapClick);
 
 // Layer Groups
-var housingG = L.layerGroup(),
-    educationG = L.layerGroup(),
-    employmentG = L.layerGroup(),
-    healthG = L.layerGroup(),
-    behavioral_healthG = L.layerGroup(),
-    foodG = L.layerGroup(),
-    goodsG = L.layerGroup(),
-    careG = L.layerGroup(),
-    financialG = L.layerGroup(),
-    legalG = L.layerGroup(),
-    ostG = L.layerGroup(),
-    case_managementG = L.layerGroup(),
-    otherG = L.layerGroup(),
-    allG = L.layerGroup();
+
+
+
+var allServices = [];
+var allLayerGroups = {};
+var baseMaps = {};
+
+// var housingG = L.layerGroup(),
+//     educationG = L.layerGroup(),
+//     employmentG = L.layerGroup(),
+//     healthG = L.layerGroup(),
+//     behavioral_healthG = L.layerGroup(),
+//     foodG = L.layerGroup(),
+//     goodsG = L.layerGroup(),
+//     careG = L.layerGroup(),
+//     financialG = L.layerGroup(),
+//     legalG = L.layerGroup(),
+//     ostG = L.layerGroup(),
+//     case_managementG = L.layerGroup(),
+//     otherG = L.layerGroup(),
+//     allG = L.layerGroup();
 
 // -------- Output PN Map Data -------
 
@@ -74,11 +81,43 @@ function newfunx(data){
   getData(servicesLink, main);
 }
 
+function makeLayerGroups(services){
+  for(let service of services){
+    allLayerGroups[service] = L.layerGroup();
+  }
+  allLayerGroups["All"] = L.layerGroup();
+}
+
+function makeMap(groups, services){
+  // console.log(services);
+  // console.log(groups);
+  
+  var overlayMaps = {};
+  for (let s of services) {
+    // console.log(s);
+    console.log(groups[s]);
+    baseMaps[s] = groups[s];
+  }
+  baseMaps["All"] = groups['All'];
+  // console.log(baseMaps);
+  var mycontrol = L.control.layers(baseMaps, overlayMaps, 
+  {position: "topleft"}).addTo(mymap);
+
+  // allG.addTo(mymap);
+}
 
 function main(data){
   // let services = data;
   orgs = restructureData(orgs, data);
+  makeLayerGroups(allServices);
+  makeMap(allLayerGroups, allServices);
+
+  // console.log(allLayerGroups);
+
+  // console.log(allServices);
+
   mapOrgs(orgs);
+  baseMaps['All'].addTo(mymap);
 }
 
 function restructureData(orgs, services){
@@ -101,19 +140,21 @@ function restructureData(orgs, services){
           // }
           if(!org.serviceTypes.includes(service.Type))
           org.serviceTypes.push(service.Type);
+        if(!allServices.includes(service.Type)){
+          allServices.push(service.Type);
+        }
       }
     }
     if (pushed == false){
       console.log("org not found: ", service.OrgName)
     }
   });
+  // console.log(orgs.serviceTypes);
   return orgs;
 }
 
-function mapOrgs(data){
-	
-	data.forEach(org => {
-    var marker = L.marker([org.Latitude, org.Longitude]);
+function createOrgPopup(org){
+  var marker = L.marker([org.Latitude, org.Longitude]);
     addToLayers(org, marker);
 
     let section = document.createElement('div');
@@ -150,22 +191,39 @@ function mapOrgs(data){
       // details.classList.add('details');
       let servDescription = addText('p', `${service.Description ? `Description: ${service.Description}`: "" }`, servDiv);
 
-    })
+    });
     
     marker.bindPopup(section);
+}
+
+function mapOrgs(data){
+	
+	data.forEach(org => {
+    
+    if(org.Latitude && org.Longitude){
+      console.log(org.Latitude, org.Longitude);
+      createOrgPopup(org);
+
+
+    } else {
+      console.log("missing", org);
+    }
+    
 	});
 }
+
+
 
 function addToLayers(org, marker){
   
   // console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
-  allG.addLayer(marker);
+  baseMaps['All'].addLayer(marker);
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
-    console.log(service);
-    let layerName = service.toLowerCase().replace(" ", "_") + "G";
+    // console.log(service);
+    // let layerName = service.toLowerCase().replace(" ", "_") + "G";
     // console.log(layerName);
-    eval(layerName).addLayer(marker);
+    baseMaps[service].addLayer(marker);
   });
 }
 
@@ -184,27 +242,6 @@ function addText(type, text, place){
     return element;
 }
 
-var baseMaps = {
-    "<b>Show All</b>": allG,
-    "Housing": housingG,
-    "Education": educationG,
-    "Employment": employmentG,
-    "Health": healthG,
-    "Behavioral Health": behavioral_healthG,
-    "Food": foodG,
-    "Clothing & Goods": goodsG,
-    "Financial Services": financialG,
-    "Legal Aid": legalG,
-    "Out of School Time": ostG,
-    "Case/Resource Management": case_managementG,
-    "Other": otherG
-};
-
-var overlayMaps = {};
 
 
-var mycontrol = L.control.layers(baseMaps, overlayMaps, 
-  {position: "topleft"}).addTo(mymap);
-
-allG.addTo(mymap);
 
