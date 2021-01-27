@@ -101,7 +101,8 @@ function makeMap(groups, services){
   baseMaps["All"] = groups['All'];
   // console.log(baseMaps);
   var mycontrol = L.control.layers(baseMaps, overlayMaps, 
-  {position: "topleft"}).addTo(mymap);
+  {position: "topleft", collapsed:false}).addTo(mymap);
+  // L.control.layers.expand();
 
   // allG.addTo(mymap);
 }
