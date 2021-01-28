@@ -4,21 +4,27 @@
 var mymap = L.map('mapid', {
     minZoom: 2,
     maxZoom: 18
-}).setView([39.9673942,-75.1979834], 14);
+}).setView([39.9703316,-75.1919523], 12.6);
 
-var maptiles = new L.StamenTileLayer("watercolor", {
-  "attribution":  [
-                'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, ',
-                'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
-                'Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, ',
-                'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
-            ].join("")
+
+var maptiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
+
+// var maptiles = new L.StamenTileLayer("watercolor", {
+//   "attribution":  [
+//                 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, ',
+//                 'under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ',
+//                 'Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, ',
+//                 'under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+//             ].join("")
+// });
 
 var labels = new L.StamenTileLayer("toner-labels");
 
 mymap.addLayer(maptiles);
-mymap.addLayer(labels);
+// mymap.addLayer(labels);
 
 var popup = L.popup();
 
