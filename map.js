@@ -4,7 +4,7 @@
 var mymap = L.map('mapid', {
     minZoom: 2,
     maxZoom: 18
-}).setView([39.9703316,-75.1919523], 12.6);
+}).setView([39.9776169,-75.1914996], 12.6);
 
 
 var maptiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
