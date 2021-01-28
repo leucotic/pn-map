@@ -89,22 +89,18 @@ function makeLayerGroups(services){
 }
 
 function makeMap(groups, services){
-  // console.log(services);
-  // console.log(groups);
+  
   
   var overlayMaps = {};
   for (let s of services) {
-    // console.log(s);
-    console.log(groups[s]);
+  
     baseMaps[s] = groups[s];
   }
   baseMaps["All"] = groups['All'];
-  // console.log(baseMaps);
+ 
   var mycontrol = L.control.layers(baseMaps, overlayMaps, 
   {position: "topleft", collapsed:false}).addTo(mymap);
-  // L.control.layers.expand();
 
-  // allG.addTo(mymap);
 }
 
 function main(data){
@@ -112,10 +108,6 @@ function main(data){
   orgs = restructureData(orgs, data);
   makeLayerGroups(allServices);
   makeMap(allLayerGroups, allServices);
-
-  // console.log(allLayerGroups);
-
-  // console.log(allServices);
 
   mapOrgs(orgs);
   baseMaps['All'].addTo(mymap);
@@ -126,19 +118,13 @@ function restructureData(orgs, services){
     org.services = [];
     org.serviceTypes = [];
   });
-    // console.log(services);
-    // console.log(orgs);
-    // console.log(orgs);
+  
   services.forEach(service =>{
-    // console.log(service.Type);
     let pushed = false;
     for(let org of orgs){
       if(org.Name === service.OrgName && org.Latitude && org.Longitude){
           org.services.push(service);
           pushed = true;
-          // if(typeof service.Type == "undefined"){
-          //   console.log(service);
-          // }
           if(!org.serviceTypes.includes(service.Type))
           org.serviceTypes.push(service.Type);
         if(!allServices.includes(service.Type)){
@@ -150,7 +136,6 @@ function restructureData(orgs, services){
       console.log("org not found: ", service.OrgName)
     }
   });
-  // console.log(orgs.serviceTypes);
   return orgs;
 }
 
@@ -202,10 +187,7 @@ function mapOrgs(data){
 	data.forEach(org => {
     
     if(org.Latitude && org.Longitude){
-      console.log(org.Latitude, org.Longitude);
       createOrgPopup(org);
-
-
     } else {
       console.log("missing", org);
     }
@@ -217,13 +199,9 @@ function mapOrgs(data){
 
 function addToLayers(org, marker){
   
-  // console.log(org.Name, org.serviceTypes.length, org.serviceTypes);
   baseMaps['All'].addLayer(marker);
   if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
   org.serviceTypes.forEach(service =>{
-    // console.log(service);
-    // let layerName = service.toLowerCase().replace(" ", "_") + "G";
-    // console.log(layerName);
     baseMaps[service].addLayer(marker);
   });
 }
@@ -234,7 +212,7 @@ function toggleClass(){
     mydiv.classList.remove("open");
   }else mydiv.classList.add("open");
   let blep = mydiv.classList;
-  console.log("clicked", blep);
+  // console.log("clicked", blep);
 }
 
 function addText(type, text, place){
@@ -243,6 +221,18 @@ function addText(type, text, place){
     return element;
 }
 
+// $('#iframe').append(`<iframe src="https://www.google.com/maps/place/${"111 N 49th St, Philadelphia, PA 19139".replaceAll(" ", "+")}"></iframe>`);
+// $('#iframe').append(`<iframe src="https://www.google.com/maps/place/111+N+49th+St,+Philadelphia,+PA+19139/" id="iView" style="width:300px;height:200px;border:dotted 1px red" frameborder="0"></iframe>`);
+
+// $(".submit").click(function()
+//                 {
+//                     $('<iframe>');  // Create an iframe element
+//                     $('<iframe />', {
+//                         name: 'frame1',
+//                         id: 'frame1',
+//                         src: 'https://www.google.com/maps/place/111+N+49th+St,+Philadelphia,+PA+19139/'
+//                     }).appendTo('#iframe');
+//                 });
 
 
 
