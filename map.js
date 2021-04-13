@@ -25,6 +25,7 @@ var labels = new L.StamenTileLayer("toner-labels");
 
 mymap.addLayer(maptiles);
 // mymap.addLayer(labels);
+//console.log($(".leaflet-control-layers-base"));
 
 var popup = L.popup();
 
@@ -106,6 +107,8 @@ function makeMap(groups, services){
  
   var mycontrol = L.control.layers(baseMaps, overlayMaps, 
   {position: "topleft", collapsed:false}).addTo(mymap);
+  $(".leaflet-control-layers").prepend("<h2>Filter By Category</h2>");
+
 
 }
 
