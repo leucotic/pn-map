@@ -22,10 +22,12 @@ body {
   color: white;
     font-family: 'Lato', sans-serif;
   text-align: center;
-  padding-top: 40vh;
   transition: .5s ease all;
   pointer-events: none;
   overflow: hidden;
+}
+#loading h1 {
+    padding-top: 40vh;
 }
 #instructions {
   position: absolute;
@@ -39,7 +41,7 @@ body {
     font-family: 'Lato', sans-serif;
   /*text-align: center;*/
   padding: 10vh 10vw;
-  overflow: hidden;
+  overflow-x: hidden;
   transition: .5s ease all;
   /*pointer-events: none;*/
 }
