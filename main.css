@@ -3,7 +3,7 @@ body {
 	margin: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 #mapid {
   height: 100%;
@@ -43,6 +43,9 @@ body {
   transition: .5s ease all;
   /*pointer-events: none;*/
 }
+#instructions p {
+  text-shadow: 0 0 5px rgba(62, 76, 160, 1);
+}
 #close {
   position: absolute;
   top: 2vh;
@@ -68,6 +71,7 @@ body {
   width: 15vw;
   height: auto;
   margin: 10px;
+  max-width: 120px;
 }
 
 .right {
@@ -77,6 +81,7 @@ body {
   max-width: 300px;
   font-size: 2vh;
 }
+
 .right a {
   color: white;
 }
