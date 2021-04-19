@@ -93,6 +93,7 @@ body {
   margin: 0;
   min-height:490px;
   overflow: hidden;
+  position: fixed;
   /*display: inline-block; */
 }
 /*.map-wrapper p {
