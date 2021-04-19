@@ -106,9 +106,9 @@ function makeMap(groups, services){
   baseMaps["All"] = groups['All'];
  
   var mycontrol = L.control.layers(baseMaps, overlayMaps, 
-  {position: "topleft", collapsed:false}).addTo(mymap);
-  $(".leaflet-control-layers").prepend("<h2>Filter By Category</h2>");
-
+  {position: "topleft"}).addTo(mymap);
+  $(".leaflet-control-layers-list").prepend("<h2>Filter By Category</h2>");
+//, collapsed:false
 
 }
 
@@ -120,6 +120,8 @@ function main(data){
 
   mapOrgs(orgs);
   baseMaps['All'].addTo(mymap);
+  $("#loading").css("opacity", "0");
+  // $("#loading").css("display", "none");
 }
 
 function restructureData(orgs, services){
