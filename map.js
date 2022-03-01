@@ -211,7 +211,7 @@ function mapOrgs(data){
 function addToLayers(org, marker){
   
   baseMaps['All'].addLayer(marker);
-  if (org.serviceTypes.length == 0) org.serviceTypes.push("other");
+  if (org.serviceTypes.length == 0) org.serviceTypes.push("Other");
   org.serviceTypes.forEach(service =>{
     baseMaps[service].addLayer(marker);
   });
